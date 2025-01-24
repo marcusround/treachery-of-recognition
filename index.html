@@ -113,11 +113,13 @@
         };
 
         ws.onmessage = function (event) {
+            var top_camera_image = document.getElementById("top_camera_image");
             var bottom_camera_image = document.getElementById("bottom_camera_image");
             var reader = new FileReader();
             reader.readAsDataURL(event.data);
             reader.onloadend = function () {
                 console.log("Received message.");
+                top_camera_image.src = reader.result;
                 bottom_camera_image.src = reader.result;
                 captured_image = reader.result;
             }
