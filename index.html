@@ -39,7 +39,7 @@
         #logo {
             height: 128px;
         }
-        
+
         #prompt_input {
             width: 100%;
             font-size: 24px;
@@ -48,6 +48,12 @@
 
         #camera_image {
             width: 640px;
+        }
+
+        #capture_button {
+            display: block;
+            margin: 16px auto;
+            font-size: 24px;
         }
 
     </style>
@@ -61,9 +67,15 @@
             return "data:image/jpeg;base64," + base64;
         }
 
-        var ws = undefined
-        
-        console.log(location.host);
+        var ws = undefined;
+        var captured_image = undefined;
+
+        function capture_image() {
+            var top_camera_image = document.getElementById("top_camera_image");
+            if (captured_image) {
+                top_camera_image.src = captured_image;
+            }
+        }
 
         ws = new WebSocket("ws://" + location.host + "/ws");
 
@@ -90,12 +102,13 @@
         };
 
         ws.onmessage = function (event) {
-            var camera_image = document.getElementById("camera_image");
+            var bottom_camera_image = document.getElementById("bottom_camera_image");
             var reader = new FileReader();
             reader.readAsDataURL(event.data);
             reader.onloadend = function () {
                 console.log("Received message.");
-                camera_image.src = reader.result;
+                bottom_camera_image.src = reader.result;
+                captured_image = reader.result;
             }
         }
 
@@ -103,8 +116,10 @@
 </head>
 <body>
     <div id="main_container">
-        <h1>NanoOWL</h1>
-        <img id="camera_image" src="" alt="Camera Image"/>
+        <h1>The Treachery of Recognition</h1>
+        <img id="top_camera_image" src="" alt="Top Camera Image"/>
+        <button id="capture_button" onclick="capture_image()">Capture Image</button>
+        <img id="bottom_camera_image" src="" alt="Bottom Camera Image"/>
         <br/>
         <input id="prompt_input" type="text" placeholder="[a face [an eye, a nose]]"/>
     </div>
