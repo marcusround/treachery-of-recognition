@@ -80,12 +80,14 @@
 
         var ws = undefined;
         var captured_image = undefined;
+        var has_captured_image = false;
 
         function capture_image() {
             var top_camera_image = document.getElementById("top_camera_image");
             if (captured_image) {
                 top_camera_image.src = captured_image;
             }
+            has_captured_image = true;
         }
 
         ws = new WebSocket("ws://" + location.host + "/ws");
@@ -119,7 +121,9 @@
             reader.readAsDataURL(event.data);
             reader.onloadend = function () {
                 console.log("Received message.");
-                top_camera_image.src = reader.result;
+                if (has_captured_image === false) {
+                    top_camera_image.src = reader.result;
+                }
                 bottom_camera_image.src = reader.result;
                 captured_image = reader.result;
             }
